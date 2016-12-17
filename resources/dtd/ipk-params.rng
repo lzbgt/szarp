@@ -515,6 +515,7 @@
 					<value>fp210</value>
 					<value>wmtp</value>
 					<value>modbus</value>
+					<value>fc</value>
 				</choice>
 			</attribute>
 		</optional>
@@ -820,6 +821,11 @@
 		<!-- ipk-extra -->
 		<optional>
 			<attribute name="export" ns="http://www.praterm.com.pl/SZARP/ipk-extra">
+				<data type="integer"/>
+			</attribute>
+		</optional>
+		<optional>
+			<attribute name="parameter-number" ns="http://www.praterm.com.pl/SZARP/ipk-extra">
 				<data type="integer"/>
 			</attribute>
 		</optional>
