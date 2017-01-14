@@ -255,12 +255,17 @@ def check_params_xmlschema():
 	Testing params with XMLSchema
 	"""
 	try:
-		xsdpath = os.path.join("/opt", "szarp", "resources", "dtd", "ipk-params.xsd")
-		xsd = etree.XMLSchema(file=xsdpath)
+		if os.path.exists("/opt/szarp/resources/dtd/ipk-params.xsd"):
+			validate = os.path.join("/opt", "szarp", "resources", "dtd", "ipk-params.xsd")
+			validator = etree.XMLSchema(file=validate)
+		else:
+			validate = os.path.join("/opt", "szarp", "resources", "dtd", "ipk-params.rng")
+			add_note("Using RNG schema validator, all warning would not be complete")
+			validator = etree.RelaxNG(file=validate)
 		try:
-			xsd.assertValid(params)
+			validator.assertValid(params)
 		except BaseException as ex:
-			add_note(xsd.error_log)
+			add_note(validator.error_log)
 	except Exception as e:
 		printerr(e)
 

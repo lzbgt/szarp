@@ -158,7 +158,16 @@ install-data-local: copyfiles links
 
 endif
 
-install-data-hook: vim paramd_access parstart_ apache2 regulators_defs dictionary ipk-params_xsd
+
+if ARMHF
+
+install-data-hook: vim paramd_access parstart_ apache2 regulators_defs dictionary
+
+else !ARMHF
+
+install-data-hook: vim paramd_acces parstart_ apache2 regulators_defs dictionary ipk-params_xsd
+
+endif
 
 uninstall-local: uninstall-apache2
 	rm -rf $(DESTDIR)@prefix@/resources/* $(DESTDIR)/etc/apache2/sites-available/szarp

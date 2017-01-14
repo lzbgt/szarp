@@ -207,6 +207,10 @@ if test "$build_os" != "linux-gnu" ; then
                        ])
 fi
 
+# test if processor type is armhf
+armhf=`$PYTHON -c "import platform;print('arm' in platform.machine())"`
+AM_CONDITIONAL([ARMHF], [test x$armhf = xfalse])
+
 AC_ARG_WITH([mingw32], AC_HELP_STRING([--with-mingw32],
 	[compile for mingw32 platform]), [
 		if test "$withval" = "no" ; then
