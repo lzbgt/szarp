@@ -31,7 +31,6 @@
 
 #include <assert.h>
 
-#include <wx/arrimpl.cpp>
 #include <wx/settings.h>
 #include <wx/log.h>
 #include <wx/filename.h>
@@ -114,7 +113,7 @@ DrawInfo::DrawInfo() {
 	d = NULL;
 	p = NULL;
 	c = wxNullColour;
-	avm = AVERAGE_VALUE_CALCULATION_AVERAGE;	
+	avm = AVERAGE_VALUE_CALCULATION_AVERAGE;
 }
 
 DrawInfo::DrawInfo(TDraw *d, DrawParam *p)
@@ -125,7 +124,7 @@ DrawInfo::DrawInfo(TDraw *d, DrawParam *p)
 	this->d = d;
 	this->p = p;
 	c = wxNullColour;
-	avm = AVERAGE_VALUE_CALCULATION_AVERAGE;	
+	avm = AVERAGE_VALUE_CALCULATION_AVERAGE;
 
 	if (d->GetColor().empty())
 		return;
@@ -393,7 +392,7 @@ DrawSet::SortDraws()
 	std::stable_sort(ordered.begin(), ordered.end(), DrawInfo::CompareDraws);
 	m_draws->clear();
 	m_draws->insert(m_draws->end(), ordered.begin(), ordered.end());
-	m_draws->insert(m_draws->end(), nonordered.begin(), nonordered.end());	
+	m_draws->insert(m_draws->end(), nonordered.begin(), nonordered.end());
 }
 
 int
@@ -604,7 +603,7 @@ ConfigManager::GetDraw(const wxString prefix, const wxString set, int index)
 
 wxString
 ConfigManager::GetSzarpDir() const
-{ 
+{
 	wxString folder_path = m_szarp_data_dir + m_base_prefix;
 	return folder_path + '/';
 }
@@ -1038,7 +1037,7 @@ ConfigManager::GetConfigByPrefix(const wxString& prefix, bool load)
 			return NULL;
 	else
 		return i->second;
-	
+
 }
 
 DrawsSets*

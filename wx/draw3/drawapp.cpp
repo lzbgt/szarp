@@ -1,6 +1,6 @@
-/* 
-  SZARP: SCADA software 
-  
+/*
+  SZARP: SCADA software
+
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 /*
  * draw3
  * SZARP
- 
+
  * Pawe³ Pa³ucha pawel@praterm.com.pl
  *
  * $Id$
@@ -47,7 +47,7 @@
 #include <signal.h>
 
 #include <boost/filesystem/path.hpp>
-#include <boost/filesystem/convenience.hpp> 
+#include <boost/filesystem/convenience.hpp>
 
 #ifdef MINGW32
 #include <winsock2.h>
@@ -113,7 +113,7 @@ void handler(int sig)
 }
 
 namespace {
-int GL_ATTRIBUTES[] = { 
+int GL_ATTRIBUTES[] = {
 	WX_GL_RGBA,
 	WX_GL_DOUBLEBUFFER,
 	WX_GL_DEPTH_SIZE, 16,
@@ -143,7 +143,7 @@ wxGLContext* DrawApp::GetGLContext() {
 	return m_gl_context;
 }
 
-void DrawApp::InitGL() { 
+void DrawApp::InitGL() {
 
 	bool gl_init_failed = false;
 	wxConfig::Get()->Read(_T("GL_INIT_FAILED"), &gl_init_failed);
@@ -178,9 +178,9 @@ bool DrawApp::OnInit() {
 #endif
 
 #if BOOST_FILESYSTEM_VERSION == 3
-	boost::filesystem::wpath::imbue(std::locale("C")); 	
+	boost::filesystem::wpath::imbue(std::locale("C"));
 #else
-	boost::filesystem::wpath_traits::imbue(std::locale("C")); 	
+	boost::filesystem::wpath_traits::imbue(std::locale("C"));
 #endif
 
 	if (!DrawGLApp::OnInit())
@@ -252,7 +252,7 @@ bool DrawApp::OnInit() {
 	wxLog::SetActiveTarget(logger);
 
 
-	m_instance = new szSingleInstanceChecker(_T(".szarp_m_instance_lock"), wxEmptyString, 
+	m_instance = new szSingleInstanceChecker(_T(".szarp_m_instance_lock"), wxEmptyString,
 			_T("draw3"));
 	if (m_instance->IsAnotherRunning()) {
 		if (!m_url.IsEmpty()) {
@@ -260,7 +260,7 @@ bool DrawApp::OnInit() {
 				SendToRunningInstance(_T("START_URL"), m_url.c_str());
 			else
 				SendToRunningInstance(_T("START_URL_EXISTING"), m_url.c_str());
-		} else if (!m_base.IsEmpty()) {		
+		} else if (!m_base.IsEmpty()) {
 			SendToRunningInstance(_T("START_BASE"), m_base.c_str());
 		} else {
 			wxLogError(_T("base not given"));
@@ -268,7 +268,7 @@ bool DrawApp::OnInit() {
 		}
 		return false;
 	}
-        
+
 
 	InitGL();
 
@@ -298,7 +298,7 @@ bool DrawApp::OnInit() {
 	splash->Show(true);
 
 	splash->PushStatusText(_("Setting locale..."));
-	
+
 	/* Set locale. */
 	this->InitializeLocale(_T("draw3"), locale);
 
@@ -309,8 +309,8 @@ bool DrawApp::OnInit() {
 		_lang = DEFAULT_LANGUAGE;
 
 	splash->PushStatusText(_("Initializing IPKContainer..."));
-	IPKContainer::Init(GetSzarpDataDir().c_str(), 
-			GetSzarpDir().c_str(), 
+	IPKContainer::Init(GetSzarpDataDir().c_str(),
+			GetSzarpDir().c_str(),
 			_lang.c_str());
 	m_cfg_mgr = new ConfigManager(GetSzarpDataDir(), IPKContainer::GetObject(), m_base);
 
@@ -319,7 +319,7 @@ bool DrawApp::OnInit() {
 	splash->PushStatusText(_("Initializing szbase..."));
 
 	splash->PushStatusText(_("Initializing XML Resources..."));
-    
+
 	InitXmlResource();
 
 	splash->PushStatusText(_("Starting database query mechanism..."));
@@ -329,7 +329,7 @@ bool DrawApp::OnInit() {
 	m_db_queue->SetDatabaseManager(m_dbmgr);
 	m_dbmgr->SetProbersAddresses(GetProbersAddresses());
 
-	Draw3Base* draw_base;
+	Draw3Base *draw_base = NULL;
 	switch (m_base_type) {
 		case SZBASE_BASE:
 			draw_base = new SzbaseBase(m_dbmgr, GetSzarpDataDir().c_str(),
@@ -362,7 +362,7 @@ bool DrawApp::OnInit() {
 
 	splash->PushStatusText(_("Loading configuration..."));
 
-	/* init activity logger with base name as server name. This assumes that 
+	/* init activity logger with base name as server name. This assumes that
 	 * server has written basename to /etc/hosts on linux machines and probably
 	 * doesn't work on windows.
 	 */
@@ -413,10 +413,10 @@ bool DrawApp::OnInit() {
 	provider->SetHelpController(m_help);
 
 	splash->PushStatusText(_("Initizalizing remarks..."));
-	
+
 	m_remarks_handler = new RemarksHandler(m_cfg_mgr);
 	m_remarks_handler->Start();
-	
+
 	splash->PushStatusText(_("Creating Frame Manager..."));
 
 	VersionChecker* version_checker = new VersionChecker(argv[0]);
@@ -434,7 +434,7 @@ bool DrawApp::OnInit() {
 	StartInstanceServer(fm, m_cfg_mgr);
 
 	wxToolTip::SetDelay(1000);
-    
+
 	SetAppName(_T("SZARPDRAW3"));
 
 	splash->Destroy();
@@ -449,20 +449,20 @@ void DrawApp::OnInitCmdLine(wxCmdLineParser &parser) {
 
         parser.SetLogo(_("Szarp Draw version 3.00."));
 
-	parser.AddOption(_T("geometry"), wxEmptyString, 
+	parser.AddOption(_T("geometry"), wxEmptyString,
 		_("X windows geometry specification"), wxCMD_LINE_VAL_STRING);
 
 	parser.AddSwitch(_T("a") , _T("activity"));
 
-	parser.AddOption(_T("base"), wxEmptyString, 
+	parser.AddOption(_T("base"), wxEmptyString,
 		_("base name"), wxCMD_LINE_VAL_STRING);
 
 	parser.AddParam(_T("url"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL);
 
-	parser.AddSwitch(_T("e"), wxEmptyString, 
+	parser.AddSwitch(_T("e"), wxEmptyString,
 		_("open url in existing window"));
 
-	parser.AddSwitch(_T("f"), wxEmptyString, 
+	parser.AddSwitch(_T("f"), wxEmptyString,
 		_("open window in full screen mode"));
 
 	parser.AddSwitch(_T("v"), _T("verbose"), _("verbose logging"));
@@ -473,10 +473,10 @@ void DrawApp::OnInitCmdLine(wxCmdLineParser &parser) {
 
 	parser.AddSwitch(_T("i"), _T("iks"), _("use iks server"));
 
-	parser.AddSwitch(_T("V"), _T("version"), 
+	parser.AddSwitch(_T("V"), _T("version"),
 		_("print version number and exit"));
-	
-	parser.AddOption(wxEmptyString, _T("iks-server"), 
+
+	parser.AddOption(wxEmptyString, _T("iks-server"),
 		_("IKS server address"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL);
 
 	parser.AddOption(wxEmptyString, _T("iks-server-port"),
@@ -485,9 +485,9 @@ void DrawApp::OnInitCmdLine(wxCmdLineParser &parser) {
 	parser.AddSwitch(_T("D<name>=<str>"), wxEmptyString,
 		_("libparnt value initialization"));
 #endif
-	
+
 	parser.AddOption(_T("d"), _T("debug"), _("debug level"), wxCMD_LINE_VAL_NUMBER);
-	
+
 
 }
 
@@ -509,14 +509,14 @@ bool DrawApp::OnCmdLineParsed(wxCmdLineParser &parser) {
 	x = y = width = height = -1;
 
         /* Read 'geometry' option. */
-	if (parser.Found(_T("geometry"), &geometry)) 
+	if (parser.Found(_T("geometry"), &geometry))
 		get_geometry(geometry, &x, &y, &width, &height);
 
 	if (parser.Found(_T("v")))
     		wxLog::SetVerbose();
 
 	m_full_screen = parser.Found(_T("f"));
-	
+
 	m_just_print_version = parser.Found(_("V"));
 
 	parser.Found(_T("base"), &m_base);
@@ -531,7 +531,7 @@ bool DrawApp::OnCmdLineParsed(wxCmdLineParser &parser) {
 		for (size_t i = 0; i < parser.GetParamCount(); ++i) {
 			wxString arg = parser.GetParam(i);
 			if (arg.StartsWith(_T("draw://"))) {
-				m_url = arg;	
+				m_url = arg;
 				break;
 			}
 		}
